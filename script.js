@@ -32,6 +32,18 @@
   head();
   window.addEventListener('scroll', head, { passive: true });
 
+  /* ---- YouTube: load the player only when asked (no tracking until play) */
+  document.addEventListener('click', function (ev) {
+    var b = ev.target.closest && ev.target.closest('button.yt');
+    if (!b) return;
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(b.getAttribute('data-yt')) + '?autoplay=1&rel=0&modestbranding=1';
+    f.title = b.getAttribute('aria-label') || 'Video';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.allowFullscreen = true;
+    b.parentNode.replaceChild(f, b);
+  });
+
   /* ---- case videos play while on screen */
   var vids = document.querySelectorAll('video[data-autoplay]');
   if (vids.length && 'IntersectionObserver' in window && !reduce) {
